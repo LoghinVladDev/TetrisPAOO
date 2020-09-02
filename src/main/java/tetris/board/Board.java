@@ -28,6 +28,8 @@ public class Board {
                     i * tileSquareLength + tileYOffset,
                     tileSquareLength
                 );
+
+                this.tiles [i][j] .setBoardPos( j, i );
             }
         }
     }
@@ -36,6 +38,28 @@ public class Board {
         this.parentApplication = parentApplication;
 
         this.buildBoard();
+    }
+
+    public int getWidth () {
+        if ( this.tiles == null )
+            return 0;
+        return this.tiles[0].length;
+    }
+
+    public int getHeight () {
+        if ( this.tiles == null )
+            return 0;
+        return this.tiles.length;
+    }
+
+    public Tile getTile (int x, int y) throws BoardOutOfBoundsException {
+        if ( this.tiles == null )
+            return null;
+
+        if ( x < 0 || x >= this.getWidth() || y < 0 || y >= this.getHeight() )
+            throw new BoardOutOfBoundsException ( x, y );
+
+        return this.tiles[y][x];
     }
 
     public void draw ( Graphics graphics ) {

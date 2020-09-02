@@ -25,6 +25,7 @@ public class GameRenderPanel extends JPanel {
 
     private void buildCanvas () {
         this.renderCanvas = new Canvas();
+        this.renderCanvas.setFocusable(false);
         this.add( this.renderCanvas );
         this.renderCanvas.setMinimumSize( super.getSize() );
         this.renderCanvas.setPreferredSize( super.getSize() );

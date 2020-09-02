@@ -38,34 +38,61 @@ public class Tile {
     }
 
     private int squareLength = 0;
-    private int x;
-    private int y;
+    private int drawX;
+    private int drawY;
+
+    private int boardX;
+    private int boardY;
 
     private TileType tileType = TileType.EMPTY;
 
     public Tile ( int x, int y, int squareLength ) {
-        this.x = x;
-        this.y = y;
+        this.drawX = x;
+        this.drawY = y;
         this.squareLength = squareLength;
+    }
+
+    public boolean equals ( Tile obj ) {
+        if ( this == obj )
+            return true;
+
+        return this.boardX == obj.boardX && this.boardY == obj.boardY;
+    }
+
+    public void setBoardPos ( int x, int y ) {
+        this.boardX = x;
+        this.boardY = y;
+    }
+
+    public int getBoardX() {
+        return boardX;
+    }
+
+    public int getBoardY() {
+        return boardY;
     }
 
     public void setTileType(TileType tileType) {
         this.tileType = tileType;
     }
 
-    public void draw ( Graphics graphics ) {
+    public TileType getTileType() {
+        return this.tileType;
+    }
+
+    public void draw (Graphics graphics ) {
         graphics.setColor( Tile.getTileTypeColor( this.tileType ) );
         graphics.fillRect(
-            this.x,
-            this.y,
+            this.drawX,
+            this.drawY,
             this.squareLength,
             this.squareLength
         );
 
         graphics.setColor( Tile.TILE_BORDER_COLOR );
         graphics.drawRect(
-                this.x,
-                this.y,
+                this.drawX,
+                this.drawY,
                 this.squareLength,
                 this.squareLength
         );

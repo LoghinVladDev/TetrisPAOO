@@ -2,9 +2,16 @@ package tetris.application;
 
 import tetris.board.Board;
 import tetris.gameMechanic.FrameTimer;
+import tetris.gameMechanic.ShapeQueue;
+import tetris.gameObject.ShapeCollideException;
+import tetris.gameObject.ShapeNoSpaceException;
+import tetris.gameObject.ShapeZ;
+import tetris.gameObject.TetrisShape;
 import tetris.window.Window;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class Application {
 
@@ -17,6 +24,9 @@ public class Application {
     private Board           gameBoard;
 
     private FrameTimer      dropShapesTimer;
+    private ShapeQueue      shapeQueue;
+
+    private TetrisShape     activeShape;
 
     private int fps = Application.DEFAULT_FPS;
 
@@ -46,6 +56,7 @@ public class Application {
     public void buildGameComponents () {
         this.gameBoard = new Board( this );
         this.dropShapesTimer = new FrameTimer( 30 );
+        this.shapeQueue = new ShapeQueue();
     }
 
     public Application () {
@@ -54,7 +65,7 @@ public class Application {
         this.gameWindow.setResizable( false );
     }
 
-    public void update () {
+    public void draw () {
         Graphics drawGraphics = this.gameWindow.getGameRenderPanel().getDrawGraphics();
 
         drawGraphics.clearRect( 0, 0, this.gameWindow.getGameRenderPanel().getWidth(), this.gameWindow.getGameRenderPanel().getHeight() );
@@ -70,20 +81,81 @@ public class Application {
         );
 
         this.gameBoard.draw( drawGraphics );
-
-        this.dropShapesTimer.update();
-        if ( this.dropShapesTimer.isDone() )
-            System.out.println("tick");
-
-//        this.debugDrawSquareSeparators( drawGraphics, rectArea );
-
         this.gameWindow.getGameRenderPanel().draw();
+    }
+
+    public void gameUpdate () {
+        if ( this.activeShape != null ) {
+            try {
+                this.activeShape.update();
+            } catch ( ShapeCollideException ignored) {
+                System.out.println("oob");
+                this.activeShape = null;
+            }
+        }
+    }
+
+    public void frameUpdate () {
+        this.dropShapesTimer.update();
+        if ( this.dropShapesTimer.isDone() ) {
+//            System.out.println("tick");
+            this.gameUpdate();
+        }
+
+        this.draw();
+    }
+
+    private void spawnShape() {
+        if ( this.activeShape != null )
+            return;
+
+        this.activeShape = this.shapeQueue.pop();
+        System.out.println(" Spawning :  " + this.activeShape.toString());
+
+        try {
+            this.activeShape.spawn(this.gameBoard);
+        } catch ( ShapeNoSpaceException exception ) {
+            System.out.println( exception.toString() );
+        }
+
+//        System.out.println( this.activeShape.getClass().toString() );
+        if ( ! this.activeShape.getClass().toString().contains("ShapeZ") )
+            this.activeShape = null;
+    }
+
+    private void treatInput ( KeyEvent event ) {
+        if ( this.activeShape != null ) {
+            if ( event.getKeyCode() == KeyEvent.VK_LEFT ) {
+
+            }
+        }
     }
 
     public void run () {
         this.gameWindow.setVisible( true );
         this.buildGameComponents();
         this.dropShapesTimer.start();
+        this.gameWindow.addKeyListener(
+            new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent e) {
+
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if ( e.getKeyCode() == KeyEvent.VK_E ) {
+                        spawnShape();
+                    } else
+                        treatInput ( e );
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+
+                }
+            }
+        );
 
         int sleepTimer = 1000 / this.fps;
 
@@ -95,7 +167,7 @@ public class Application {
                 while ( true ) {
                     startFrameTime = System.nanoTime();
 
-                    update();
+                    frameUpdate();
 
                     frameTime = System.nanoTime() - startFrameTime;
                     int frameTimeInMS = (int) (frameTime / 1000000);
