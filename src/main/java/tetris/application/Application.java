@@ -66,7 +66,7 @@ public class Application {
         this.dropShapesTimer = new FrameTimer( 30 );
         this.descendCoolDown = new FrameTimer( 5 );
         this.moveCoolDown    = new FrameTimer( 3 );
-        this.rotateCoolDown  = new FrameTimer( 3 );
+        this.rotateCoolDown  = new FrameTimer( 1 );
         this.shapeQueue = new ShapeQueue();
     }
 
@@ -100,9 +100,27 @@ public class Application {
             try {
                 this.activeShape.update();
             } catch ( ShapeCollideException ignored) {
-//                System.out.println("oob");
                 this.activeShape = null;
+
+                try {
+                    this.spawnShape();
+                } catch ( ShapeNoSpaceException exception ) {
+                    System.out.println( exception.toString() );
+                    this.activeShape = null;
+                }
+
+                this.removeLines();
             }
+        }
+    }
+
+    private void removeLines () {
+        int lineToBeRemovedIndex = this.gameBoard.getFullLineIndex();
+
+        while ( lineToBeRemovedIndex != -1 ) {
+            this.gameBoard.removeLine ( lineToBeRemovedIndex, this.activeShape );
+
+            lineToBeRemovedIndex = this.gameBoard.getFullLineIndex();
         }
     }
 
@@ -132,6 +150,15 @@ public class Application {
                     this.isRotatePressed = false;
             } catch ( ShapeCollideException ignored ) {
                 this.activeShape = null;
+
+                try {
+                    this.spawnShape();
+                } catch ( ShapeNoSpaceException exception ) {
+                    System.out.println( exception.toString() );
+                    this.activeShape = null;
+                }
+
+                this.removeLines();
             }
         }
 

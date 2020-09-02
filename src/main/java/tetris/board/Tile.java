@@ -52,7 +52,16 @@ public class Tile {
         this.squareLength = squareLength;
     }
 
-    public boolean equals ( Tile obj ) {
+    @Override
+    public String toString() {
+        return "Tile{" +
+//                "boardX=" + boardX +
+//                ", boardY=" + boardY +
+                "tileType=" + tileType +
+                '}';
+    }
+
+    public boolean equals (Tile obj ) {
         if ( this == obj )
             return true;
 

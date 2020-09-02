@@ -1,9 +1,11 @@
 package tetris.board;
 
 import tetris.application.Application;
+import tetris.gameObject.TetrisShape;
 import tetris.window.Window;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class Board {
     private Tile[][] tiles;
@@ -50,6 +52,49 @@ public class Board {
         if ( this.tiles == null )
             return 0;
         return this.tiles.length;
+    }
+
+    public boolean isLineFull ( int lineIndex ) {
+        if ( this.tiles == null )
+            return false;
+
+        for ( int j = 0; j < this.tiles[ lineIndex ].length; j++ ) {
+            if (this.tiles[lineIndex][j].getTileType().equals(Tile.TileType.EMPTY))
+                return false;
+        }
+
+        return true;
+    }
+
+    public void removeLine ( int lineIndex, TetrisShape activeShape ) {
+        if ( this.tiles == null )
+            return;
+
+        if ( lineIndex < 0 || lineIndex >= this.tiles.length )
+            return;
+
+        for ( int i = lineIndex; i >= 1; i-- ) {
+            for ( int j = 0; j < this.tiles[ i ].length; j++ ) {
+                if ( ! activeShape.contains( this.tiles[ i ][ j ] ) && ! activeShape.contains( this.tiles[ i - 1 ][ j ] ) )
+                    this.tiles[ i ][ j ].setTileType(this.tiles[ i - 1 ][ j ].getTileType());
+            }
+        }
+
+        for ( int j = 0; j < this.tiles[ 0 ].length; j++ )
+            if ( ! activeShape.contains( this.tiles[ 0 ][ j ] ) )
+                this.tiles[ 0 ][ j ].setTileType( Tile.TileType.EMPTY );
+    }
+
+    public int getFullLineIndex() {
+        if( this.tiles == null )
+            return -1;
+
+        for ( int i = this.tiles.length - 1 ; i >= 0; i-- ) {
+            if ( this.isLineFull ( i ) )
+                return i;
+        }
+
+        return -1;
     }
 
     public Tile getTile (int x, int y) throws BoardOutOfBoundsException {

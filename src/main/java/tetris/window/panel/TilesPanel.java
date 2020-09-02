@@ -17,7 +17,7 @@ public class TilesPanel extends JPanel {
         super.setMinimumSize( new Dimension ( TilesPanel.MINIMUM_PANEL_WIDTH, TilesPanel.MINIMUM_PANEL_HEIGHT ) );
         super.setPreferredSize( this.getMinimumSize() );
 
-        super.setBackground( Color.BLUE );
+//        super.setBackground( Color.BLUE );
     }
 
     public TilesPanel ( Window parentWindow ) {

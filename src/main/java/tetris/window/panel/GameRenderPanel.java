@@ -45,7 +45,7 @@ public class GameRenderPanel extends JPanel {
     private void configurePanel () {
         super.setMinimumSize( new Dimension( GameRenderPanel.MINIMUM_PANEL_WIDTH, GameRenderPanel.MINIMUM_PANEL_HEIGHT ) );
 
-        super.setBackground( Color.GREEN );
+//        super.setBackground( Color.GREEN );
     }
 
     public GameRenderPanel( Window parentWindow ) {

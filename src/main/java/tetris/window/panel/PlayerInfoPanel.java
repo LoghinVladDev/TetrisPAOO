@@ -16,7 +16,7 @@ public class PlayerInfoPanel extends JPanel {
         super.setMinimumSize( new Dimension( PlayerInfoPanel.MINIMUM_PANEL_WIDTH, PlayerInfoPanel.MINIMUM_PANEL_HEIGHT ) );
         super.setPreferredSize( this.getMinimumSize() );
 
-        super.setBackground( Color.RED );
+//        super.setBackground( Color.RED );
     }
 
     public PlayerInfoPanel( Window parentWindow ) {
