@@ -2,10 +2,10 @@ package tetris.application;
 
 import tetris.board.Board;
 import tetris.gameMechanic.FrameTimer;
+import tetris.gameMechanic.ShapeKeyListener;
 import tetris.gameMechanic.ShapeQueue;
 import tetris.gameObject.ShapeCollideException;
 import tetris.gameObject.ShapeNoSpaceException;
-import tetris.gameObject.ShapeZ;
 import tetris.gameObject.TetrisShape;
 import tetris.window.Window;
 
@@ -24,11 +24,19 @@ public class Application {
     private Board           gameBoard;
 
     private FrameTimer      dropShapesTimer;
+    private FrameTimer      descendCoolDown;
+    private FrameTimer      moveCoolDown;
+    private FrameTimer      rotateCoolDown;
+
     private ShapeQueue      shapeQueue;
 
     private TetrisShape     activeShape;
 
+    private ShapeKeyListener shapeKeyListener;
+
     private int fps = Application.DEFAULT_FPS;
+
+    private boolean isRotatePressed = false;
 
     private void debugDrawSquareSeparators ( Graphics graphics, Rectangle drawArea ) {
         int width = drawArea.width / SQUARE_COUNT_WIDTH;
@@ -56,6 +64,9 @@ public class Application {
     public void buildGameComponents () {
         this.gameBoard = new Board( this );
         this.dropShapesTimer = new FrameTimer( 30 );
+        this.descendCoolDown = new FrameTimer( 5 );
+        this.moveCoolDown    = new FrameTimer( 3 );
+        this.rotateCoolDown  = new FrameTimer( 3 );
         this.shapeQueue = new ShapeQueue();
     }
 
@@ -89,15 +100,46 @@ public class Application {
             try {
                 this.activeShape.update();
             } catch ( ShapeCollideException ignored) {
-                System.out.println("oob");
+//                System.out.println("oob");
                 this.activeShape = null;
             }
         }
     }
 
     public void frameUpdate () {
+        try {
+            if (this.activeShape == null)
+                this.spawnShape();
+        } catch ( ShapeNoSpaceException exception ) {
+            System.out.println( exception.toString() );
+            this.activeShape = null;
+        }
+
+        if ( this.activeShape != null ) {
+            try {
+                if (this.descendCoolDown.isDone()) {
+                    this.activeShape.descend(this.shapeKeyListener);
+                }
+
+                if (this.moveCoolDown.isDone()) {
+                    this.activeShape.move(this.shapeKeyListener);
+                }
+
+                if (this.rotateCoolDown.isDone() & !this.isRotatePressed) {
+                    this.isRotatePressed = true;
+                    this.activeShape.rotate(this.shapeKeyListener);
+                } else if (!this.shapeKeyListener.isLeftRotatePressed() && !this.shapeKeyListener.isRightRotatePressed())
+                    this.isRotatePressed = false;
+            } catch ( ShapeCollideException ignored ) {
+                this.activeShape = null;
+            }
+        }
+
         this.dropShapesTimer.update();
-        if ( this.dropShapesTimer.isDone() ) {
+        this.descendCoolDown.update();
+        this.moveCoolDown.update();
+        this.rotateCoolDown.update();
+        if ( this.dropShapesTimer.isDone() && ! this.shapeKeyListener.isFastDescendPressed() ) {
 //            System.out.println("tick");
             this.gameUpdate();
         }
@@ -105,57 +147,28 @@ public class Application {
         this.draw();
     }
 
-    private void spawnShape() {
+    private void spawnShape() throws ShapeNoSpaceException {
         if ( this.activeShape != null )
             return;
 
         this.activeShape = this.shapeQueue.pop();
         System.out.println(" Spawning :  " + this.activeShape.toString());
 
-        try {
-            this.activeShape.spawn(this.gameBoard);
-        } catch ( ShapeNoSpaceException exception ) {
-            System.out.println( exception.toString() );
-        }
-
-//        System.out.println( this.activeShape.getClass().toString() );
-        if ( ! this.activeShape.getClass().toString().contains("ShapeZ") )
-            this.activeShape = null;
-    }
-
-    private void treatInput ( KeyEvent event ) {
-        if ( this.activeShape != null ) {
-            if ( event.getKeyCode() == KeyEvent.VK_LEFT ) {
-
-            }
-        }
+        this.activeShape.spawn(this.gameBoard);
     }
 
     public void run () {
         this.gameWindow.setVisible( true );
         this.buildGameComponents();
+
         this.dropShapesTimer.start();
-        this.gameWindow.addKeyListener(
-            new KeyListener() {
-                @Override
-                public void keyTyped(KeyEvent e) {
+        this.descendCoolDown.start();
+        this.moveCoolDown.start();
+        this.rotateCoolDown.start();
 
-                }
+        this.shapeKeyListener = new ShapeKeyListener();
 
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    if ( e.getKeyCode() == KeyEvent.VK_E ) {
-                        spawnShape();
-                    } else
-                        treatInput ( e );
-                }
-
-                @Override
-                public void keyReleased(KeyEvent e) {
-
-                }
-            }
-        );
+        this.gameWindow.addKeyListener( this.shapeKeyListener );
 
         int sleepTimer = 1000 / this.fps;
 
