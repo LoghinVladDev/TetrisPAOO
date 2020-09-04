@@ -32,8 +32,8 @@ public class Window extends JFrame {
         this.buildWindowPanels();
 
         super.add( this.gameRenderPanel,    BorderLayout.CENTER );
-        super.add( this.playerInfoPanel,    BorderLayout.EAST );
-        super.add( this.tilesPanel,         BorderLayout.WEST );
+        super.add( this.playerInfoPanel,    BorderLayout.WEST );
+        super.add( this.tilesPanel,         BorderLayout.EAST );
 
         super.setMinimumSize(
             new Dimension(
@@ -61,6 +61,10 @@ public class Window extends JFrame {
         this.parentApplication = parentApplication;
 
         this.configureWindowSettings();
+    }
+
+    public TilesPanel getTilesPanel() {
+        return tilesPanel;
     }
 
     public GameRenderPanel getGameRenderPanel() {

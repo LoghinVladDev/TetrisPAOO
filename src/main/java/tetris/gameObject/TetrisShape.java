@@ -200,8 +200,6 @@ public abstract class TetrisShape {
     }
 
     public void update() throws ShapeCollideException {
-//        System.out.println("update");
-
         Tile[] newTileArray = new Tile[ this.getShapeTileCount() ];
 
         try {

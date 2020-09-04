@@ -38,36 +38,15 @@ public class Application {
 
     private boolean isRotatePressed = false;
 
-    private void debugDrawSquareSeparators ( Graphics graphics, Rectangle drawArea ) {
-        int width = drawArea.width / SQUARE_COUNT_WIDTH;
-        int height = drawArea.height / SQUARE_COUNT_HEIGHT;
-
-        int length = Math.min ( width, height );
-
-        int xOffset = drawArea.x + ( drawArea.width - SQUARE_COUNT_WIDTH * length ) / 2;
-        int yOffset = drawArea.y + Window.DEFAULT_WINDOW_HEIGHT / 90;
-
-        System.out.println( width + ", " + height );
-
-        for ( int i = 0; i < SQUARE_COUNT_HEIGHT; i++ ) {
-            for ( int j = 0; j < SQUARE_COUNT_WIDTH; j++ ) {
-                graphics.drawRect(
-                    j * length + xOffset,
-                    i * length + yOffset,
-                    length,
-                    length
-                );
-            }
-        }
-    }
-
     public void buildGameComponents () {
-        this.gameBoard = new Board( this );
-        this.dropShapesTimer = new FrameTimer( 30 );
-        this.descendCoolDown = new FrameTimer( 5 );
-        this.moveCoolDown    = new FrameTimer( 3 );
-        this.rotateCoolDown  = new FrameTimer( 1 );
-        this.shapeQueue = new ShapeQueue();
+        this.gameBoard          = new Board( this );
+        this.dropShapesTimer    = new FrameTimer( 30 );
+        this.descendCoolDown    = new FrameTimer( 5 );
+        this.moveCoolDown       = new FrameTimer( 3 );
+        this.rotateCoolDown     = new FrameTimer( 0 );
+        this.shapeQueue         = new ShapeQueue();
+
+        this.gameWindow.getTilesPanel().buildQueueTiles();
     }
 
     public Application () {
@@ -92,6 +71,8 @@ public class Application {
         );
 
         this.gameBoard.draw( drawGraphics );
+
+        this.gameWindow.getTilesPanel().draw( this.shapeQueue );
         this.gameWindow.getGameRenderPanel().draw();
     }
 
@@ -143,7 +124,7 @@ public class Application {
                     this.activeShape.move(this.shapeKeyListener);
                 }
 
-                if (this.rotateCoolDown.isDone() & !this.isRotatePressed) {
+                if ( !this.isRotatePressed && ( this.shapeKeyListener.isRightRotatePressed() || this.shapeKeyListener.isLeftRotatePressed() ) ) {
                     this.isRotatePressed = true;
                     this.activeShape.rotate(this.shapeKeyListener);
                 } else if (!this.shapeKeyListener.isLeftRotatePressed() && !this.shapeKeyListener.isRightRotatePressed())

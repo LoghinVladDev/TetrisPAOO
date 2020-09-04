@@ -11,12 +11,18 @@ public class Board {
     private Tile[][] tiles;
     private Application parentApplication;
 
+    private static int tileSquareLength;
+
+    public static int getTileSquareLength () {
+        return Board.tileSquareLength;
+    }
+
     private void buildBoard() {
         Rectangle renderArea = this.parentApplication.getGameWindow().getGameRenderPanel().getRenderSize();
         int tileWidthMax = renderArea.width / Application.SQUARE_COUNT_WIDTH;
         int tileHeightMax = renderArea.height / Application.SQUARE_COUNT_HEIGHT;
 
-        int tileSquareLength = Math.min( tileWidthMax, tileHeightMax );
+        Board.tileSquareLength = Math.min( tileWidthMax, tileHeightMax );
 
         int tileXOffset = renderArea.x + ( renderArea.width - tileSquareLength * Application.SQUARE_COUNT_WIDTH ) / 2;
         int tileYOffset = renderArea.y + ( Window.DEFAULT_WINDOW_HEIGHT / 90 );
@@ -26,9 +32,9 @@ public class Board {
         for ( int i = 0; i < Application.SQUARE_COUNT_HEIGHT; i++ ) {
             for ( int j = 0; j < Application.SQUARE_COUNT_WIDTH; j++ ) {
                 this.tiles [i][j] = new Tile(
-                    j * tileSquareLength + tileXOffset,
-                    i * tileSquareLength + tileYOffset,
-                    tileSquareLength
+                    j * Board.tileSquareLength + tileXOffset,
+                    i * Board.tileSquareLength + tileYOffset,
+                    Board.tileSquareLength
                 );
 
                 this.tiles [i][j] .setBoardPos( j, i );

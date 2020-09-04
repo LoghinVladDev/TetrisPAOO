@@ -55,6 +55,12 @@ public class GameRenderPanel extends JPanel {
         this.configurePanel();
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+        System.out.println("fmm");
+    }
+
     public Graphics getDrawGraphics () {
         if ( this.renderCanvas == null ) {
             this.buildCanvas();
