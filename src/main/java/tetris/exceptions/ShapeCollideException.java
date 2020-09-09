@@ -1,6 +1,4 @@
-package tetris.gameObject;
-
-import tetris.board.Tile;
+package tetris.exceptions;
 
 public class ShapeCollideException extends Exception {
     @Override

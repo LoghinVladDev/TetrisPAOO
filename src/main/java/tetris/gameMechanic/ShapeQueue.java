@@ -2,14 +2,15 @@ package tetris.gameMechanic;
 
 import tetris.gameObject.TetrisShape;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class ShapeQueue {
-    public static final int SHAPES_IN_QUEUE = 3;
 
-    private Queue <TetrisShape>         shapeQueue;
-    private TetrisShape.ShapeFactory    shapeFactory;
+    private final Queue <TetrisShape>         shapeQueue;
+    private final TetrisShape.ShapeFactory    shapeFactory;
 
     private void resetQueue () {
         this.shapeQueue.clear();
@@ -23,6 +24,10 @@ public class ShapeQueue {
         this.shapeQueue     = new LinkedList<>();
         this.shapeFactory   = new TetrisShape.ShapeFactory();
         this.resetQueue();
+    }
+
+    public List<TetrisShape> getShapes () {
+        return new ArrayList<>(this.shapeQueue);
     }
 
     public TetrisShape pop () {

@@ -1,10 +1,6 @@
 package tetris.gameObject;
 
-import tetris.board.Board;
-import tetris.board.BoardOutOfBoundsException;
 import tetris.board.Tile;
-
-import java.util.Arrays;
 
 public class ShapeZ extends TetrisShape {
 

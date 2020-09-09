@@ -1,7 +1,5 @@
 package tetris.gameMechanic;
 
-import javafx.scene.input.KeyCode;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 

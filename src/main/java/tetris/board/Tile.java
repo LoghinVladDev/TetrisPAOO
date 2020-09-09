@@ -55,8 +55,6 @@ public class Tile {
     @Override
     public String toString() {
         return "Tile{" +
-//                "boardX=" + boardX +
-//                ", boardY=" + boardY +
                 "tileType=" + tileType +
                 '}';
     }

@@ -1,4 +1,4 @@
-package tetris.board;
+package tetris.exceptions;
 
 public class BoardOutOfBoundsException extends Exception {
     private int xOutOfBounds;

@@ -1,10 +1,15 @@
 package tetris.gameObject;
 
 import tetris.board.Board;
-import tetris.board.BoardOutOfBoundsException;
+import tetris.exceptions.BoardOutOfBoundsException;
 import tetris.board.Tile;
+import tetris.exceptions.RotateFailedException;
+import tetris.exceptions.ShapeCollideException;
+import tetris.exceptions.ShapeNoSpaceException;
 import tetris.gameMechanic.FrameTimer;
 import tetris.gameMechanic.ShapeKeyListener;
+
+import java.awt.*;
 
 public abstract class TetrisShape {
 
@@ -24,12 +29,6 @@ public abstract class TetrisShape {
     protected int rotateIndex;
 
     protected Board gameBoard = null;
-
-    private static final FrameTimer rotateCoolDown = new FrameTimer( 3 );
-
-    public static FrameTimer getRotateCoolDown() {
-        return rotateCoolDown;
-    }
 
     protected TetrisShape() {
         this.shapeTiles = new Tile [ this.getShapeTileCount() ];
@@ -65,9 +64,9 @@ public abstract class TetrisShape {
                 newTileArray[ shapeTileIndex ] = currentTile;
 
                 if ( ! currentTile.getTileType().equals( Tile.TileType.EMPTY ) && ! this.contains( currentTile ) )
-                    return;
+                    throw new RotateFailedException();
             } catch ( BoardOutOfBoundsException ignored ) {
-                return;
+                throw new RotateFailedException();
             }
         }
 
@@ -223,6 +222,26 @@ public abstract class TetrisShape {
 
         for ( Tile currentTile : this.shapeTiles ) {
             currentTile.setTileType( this.getShapeTileType() );
+        }
+    }
+
+    public void drawShapeAt(int x, int y, Graphics g) {
+        int squareLen = Board.getTileSquareLength();
+        for ( int i = 0; i < this.getShapeTileCount(); i++ ) {
+            g.setColor( Tile.getTileTypeColor( this.getShapeTileType() ) );
+            g.fillRect(
+                x + squareLen * this.getXShapeOffsetsForRotateIndex(0)[i],
+                y + squareLen * this.getYShapeOffsetsForRotateIndex(0)[i],
+                    squareLen,
+                    squareLen
+            );
+            g.setColor(Color.BLACK);
+            g.drawRect(
+                    x + squareLen * this.getXShapeOffsetsForRotateIndex(0)[i],
+                    y + squareLen * this.getYShapeOffsetsForRotateIndex(0)[i],
+                    squareLen,
+                    squareLen
+            );
         }
     }
 

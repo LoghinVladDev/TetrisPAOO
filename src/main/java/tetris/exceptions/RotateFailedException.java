@@ -1,4 +1,4 @@
-package tetris.gameObject;
+package tetris.exceptions;
 
 public class RotateFailedException extends Exception {
     @Override

@@ -1,8 +1,6 @@
 package tetris.gameObject;
 
-import tetris.board.Board;
 import tetris.board.Tile;
-import tetris.gameMechanic.ShapeKeyListener;
 
 public class ShapeI extends TetrisShape {
 

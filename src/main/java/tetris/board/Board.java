@@ -1,11 +1,10 @@
 package tetris.board;
 
 import tetris.application.Application;
+import tetris.exceptions.BoardOutOfBoundsException;
 import tetris.gameObject.TetrisShape;
-import tetris.window.Window;
 
 import java.awt.*;
-import java.util.Arrays;
 
 public class Board {
     private Tile[][] tiles;
@@ -23,9 +22,10 @@ public class Board {
         int tileHeightMax = renderArea.height / Application.SQUARE_COUNT_HEIGHT;
 
         Board.tileSquareLength = Math.min( tileWidthMax, tileHeightMax );
+        renderArea = this.parentApplication.getGameWindow().getGameRenderPanel().getRenderSize();
 
         int tileXOffset = renderArea.x + ( renderArea.width - tileSquareLength * Application.SQUARE_COUNT_WIDTH ) / 2;
-        int tileYOffset = renderArea.y + ( Window.DEFAULT_WINDOW_HEIGHT / 90 );
+        int tileYOffset = renderArea.y + ( 5 );
 
         this.tiles = new Tile[ Application.SQUARE_COUNT_HEIGHT ][Application.SQUARE_COUNT_WIDTH ];
 

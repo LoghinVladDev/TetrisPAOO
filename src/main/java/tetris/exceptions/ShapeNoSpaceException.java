@@ -1,11 +1,11 @@
-package tetris.gameObject;
+package tetris.exceptions;
 
 import tetris.board.Tile;
 
 public class ShapeNoSpaceException extends Exception {
 
-    private int xPosOccupied;
-    private int yPosOccupied;
+    private final int xPosOccupied;
+    private final int yPosOccupied;
     private Tile occupiedTile;
 
     public ShapeNoSpaceException ( int xPos, int yPos ) {

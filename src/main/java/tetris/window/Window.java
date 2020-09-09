@@ -20,6 +20,10 @@ public class Window extends JFrame {
     private PlayerInfoPanel     playerInfoPanel         = null;
     private TilesPanel          tilesPanel              = null;
 
+    public PlayerInfoPanel getPlayerInfoPanel() {
+        return playerInfoPanel;
+    }
+
     private void buildWindowPanels() {
         this.gameRenderPanel    = new GameRenderPanel( this );
         this.playerInfoPanel    = new PlayerInfoPanel( this );
@@ -27,35 +31,33 @@ public class Window extends JFrame {
     }
 
     private void configureWindowSettings () {
-        super.setSize( new Dimension( Window.DEFAULT_WINDOW_WIDTH, Window.DEFAULT_WINDOW_HEIGHT ));
+        super.setSize(new Dimension(Window.DEFAULT_WINDOW_WIDTH, Window.DEFAULT_WINDOW_HEIGHT));
 
         this.buildWindowPanels();
 
-        super.add( this.gameRenderPanel,    BorderLayout.CENTER );
-        super.add( this.playerInfoPanel,    BorderLayout.WEST );
-        super.add( this.tilesPanel,         BorderLayout.EAST );
+        super.add(this.gameRenderPanel, BorderLayout.CENTER);
+        super.add(this.playerInfoPanel, BorderLayout.WEST);
+        super.add(this.tilesPanel, BorderLayout.EAST);
 
         super.setMinimumSize(
-            new Dimension(
-                (
-                    this.gameRenderPanel.getMinimumSize().width +
-                    this.playerInfoPanel.getMinimumSize().width +
-                    this.tilesPanel.getMinimumSize().width
-                ),
-                this.gameRenderPanel.getMinimumSize().height
-            )
+                new Dimension(
+                        (
+                                this.gameRenderPanel.getMinimumSize().width +
+                                        this.playerInfoPanel.getMinimumSize().width +
+                                        this.tilesPanel.getMinimumSize().width
+                        ),
+                        this.gameRenderPanel.getMinimumSize().height
+                )
         );
 
-        super.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public Window( Application parentApplication ) {
-        super( Window.DEFAULT_WINDOW_TITLE );
-        this.parentApplication = parentApplication;
-
-        this.configureWindowSettings();
-    }
-
+    /**
+     * Window Ctor
+     * @param parentApplication ptr to Application creator object
+     * @param title window title
+     */
     public Window( Application parentApplication, String title ) {
         super( title );
         this.parentApplication = parentApplication;
